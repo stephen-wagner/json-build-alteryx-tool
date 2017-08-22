@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <script>
+        // Include version 1 of the engine base library.
+        document.write('<link rel="import" href="' + window.Alteryx.LibDir + '1/lib/alteryx/engine/includes.html">');
+    </script>
+
+    <script>
+     /**
+      * You may wish to namespace your own data for live-processing somewhere like this:
+      */
+     window.JSONBuild = {
+     }
+
+     /**
+      * This function defines our input and output connections.
+      * It must match the input and output connections defined in the GUI plugin's XML file.
+      */
+     Alteryx.Plugin.DefineConnections = function()
+     {
+       return {
+        IncomingConnections: [
+          {
+            "type": "Input",
+            "GroupInfo": {
+              "count": 0,
+              "grouping": "false"
+            }
+          }
+        ],
+        OutgoingConnections: [
+         {
+          "name": "Output"
+         }
+        ]
+       };
+     };
+
+     /**
+      * Called at the beginning of plugin lifetime with the plugin's configuration properties.
+      * This implementation contains example code that prints each configuration key/value pair as
+      * an engine output message.
+      *
+      * @params config The plugin's configuration.
+      */
+     Alteryx.Plugin.PI_Init = function(config) {
+       var OutputSelector = JSONBuild.OutputSelector = config.Configuration.OutputSelector
+     };
+
+     /**
+      * Called once for each incoming connection with the connection's metainfo. When a per-connection init comes in,
+      * we would probably store off the incoming RecordInfo.
+      *
+      * @params metaInfo The meta-information for the current incoming connection.
+      */
+     Alteryx.Plugin.II_Init = function(metaInfo) {
+      JSONBuild.outputInfo = metaInfo.RecordInfo
+
+      // Names for JSON object
+      var outputFieldNames = JSONBuild.outputFieldNames = []
+      
+      for (var item in JSONBuild.outputInfo.Field) {
+       outputFieldNames.push(JSONBuild.outputInfo.Field[item].name) 
+      }
+     };
+
+     /**
+      * After II_Init has been called for each incoming connection, II_PushRecords is called for each non-empty
+      * incoming connection with that connection's records. This implementation contains example code that
+      * pushes out the same records it receives.
+      *
+      * @param data The incoming records.
+      */
+     Alteryx.Plugin.II_PushRecords = function(data) {
+      JSONBuild.OutputSelector == 'array' ? buildRecordArray(data) : buildRecordObjects(data)
+     };
+
+    const buildRecordObjects = (data) => {
+      var JSONobj = JSONBuild.JSONobj = JSONBuild.JSONobj || []
+
+      for (var row in data.Records) {
+        var obj = {}
+        for (var column in data.Records[row]) {
+          obj[JSONBuild.outputFieldNames[column]] = data.Records[row][column]
+        }
+          JSONobj.push(obj)
+      }
+    }
+
+    const buildRecordArray = (data) => {
+      var fieldArray = JSONBuild.fieldArray = JSONBuild.fieldArray || [];
+   
+      for (var column in data.Records[0]) {
+       var dataArray = [];
+      
+       for (var row in data.Records) {
+        dataArray.push(data.Records[row][column])
+       }
+      
+       fieldArray.push(dataArray)
+      }
+
+      const buildJSON = (names, data) => {
+       const JSONobj = {}
+
+       for (var record in names) {
+        JSONobj[names[record]] = data[record]
+       }
+        
+       return JSONobj
+      }
+      console.log(JSONBuild.fieldArray)
+      var JSONobj = JSONBuild.JSONobj = buildJSON(JSONBuild.outputFieldNames, JSONBuild.fieldArray)
+    }
+     /**
+      * II_AllClosed is called with no arguments after all incoming connections have closed. This implementation
+      * sends a CloseOutput message with the name of the outgoing connection to close.
+      *
+      * All code paths must terminate with a call to Alteryx.Engine.SendMessage.Complete()
+      */
+     Alteryx.Plugin.II_AllClosed = function() {
+      var metaObj = {
+        "Field": [
+         {
+          "name":"JSON",
+          "size":1073741823,
+          "source":"JSON Build Tool",
+          "type":"V_WString"
+         }
+        ]
+      };
+      var output = []
+      var data = []
+      data.push(JSON.stringify(JSONBuild.JSONobj))
+      output.push(data)
+
+      Alteryx.Engine.SendMessage.RecordInfo(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, metaObj);
+      Alteryx.Engine.SendMessage.PushRecords(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, output);
+      Alteryx.Engine.SendMessage.CloseOutput(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name);
+      Alteryx.Engine.SendMessage.Complete();
+     };
+
+     /**
+      * If the tool has no input:
+      *    PI_PushAllRecords is called instead of the II functions.
+      *    It is also called at configure time with a record limit of 0.
+      *
+      * If this function is implemented, all code paths must signal completion with a call to
+      *    Alteryx.Engine.SendMessage.Complete()
+      *
+      * @param recordLimit The maximum number of records that this function should return.
+      */
+     Alteryx.Plugin.PI_PushAllRecords = function(recordLimit)
+     {
+       Alteryx.Engine.SendMessage.Error('XMSG("This tool requires an input connection.")');
+       Alteryx.Engine.SendMessage.Complete();
+     };
+
+     /**
+      * PI_Close is called with no arguments at the end of the plugin's lifetime.
+      * All code paths must terminate with a call to Alteryx.Engine.SendMessage.PI_Close()
+      */
+     Alteryx.Plugin.PI_Close = function()
+     {
+       Alteryx.Engine.SendMessage.PI_Close();
+     };
+
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<AlteryxJavaScriptPlugin>
+  <EngineSettings EngineDllEntryPoint="JSON BuildEngine.html" EngineDll="HTML" SDKVersion="10.1"/>
+  <Properties>
+    <MetaInfo>
+      <NameIsFileName value="True"/>
+      <Name>JSON Build</Name>
+      <Description>Creates a JSON object from an incoming data stream.</Description>
+      <RootToolName>json-build</RootToolName>
+      <ToolVersion>1</ToolVersion>
+      <ToolInDB value="false"/>
+      <CategoryName>Developer</CategoryName>
+      <SearchTags>json, build</SearchTags>
+      <Author>Stephen Wagner</Author>
+      <Company>Alteryx</Company>
+      <Copyright>2017</Copyright>
+      <DescriptionLink actual="" display=""/>
+    </MetaInfo>
+  </Properties>
+  <GuiSettings Help="" Html="JSON BuildGui.html" Icon="JSON BuildIcon.png" SDKVersion="10.1">
+    <InputConnections>
+      <Connection Name="Input" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+    </InputConnections>
+    <OutputConnections>
+      <Connection Name="Output" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+    </OutputConnections>
+  </GuiSettings>
+</AlteryxJavaScriptPlugin>

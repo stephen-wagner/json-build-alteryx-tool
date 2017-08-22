@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AlteryxJavaScriptPlugin>
+  <Properties>
+    <MetaInfo>
+      <Name>JSON Build</Name>
+      <Description>Creates a JSON object from an incoming data stream.</Description>
+      <ToolVersion>1</ToolVersion>
+      <CategoryName>Developer</CategoryName>
+      <Author>Stephen Wagner</Author>
+      <Icon>JSON BuildIcon.png</Icon>
+    </MetaInfo>
+  </Properties>
+</AlteryxJavaScriptPlugin>

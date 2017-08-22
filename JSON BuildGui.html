@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>JSON Build</title>
+    <script type="text/javascript">
+     // Include the base GUI library.
+     document.write('<link rel="import" href="' + window.Alteryx.LibDir + '2/lib/includes.html">');
+    </script>
+    <style type="text/css">
+      body {
+          background-color: #e5e5e5
+      }
+      .legendHeader {
+          font: Segoe UI Regular;
+          font-size: 14px;
+          color: #1691c6;
+          align-content: left;
+          background-color: #e5e5e5;
+      }
+      .example {
+        background-color: #ffffff;
+        border-left-style: solid;
+        border-left-width: 2px;
+        border-left-color: #999999;
+        margin: 2px;
+        padding: 2px;
+      }
+
+    </style>
+  </head>
+  <body style="visibility: visible">
+    <fieldset>
+    <legend class="legendHeader">Select Output Format</legend>
+      <article id="widgetList">
+        <section>
+          <ayx data-ui-props='{type:"RadioGroup", widgetId:"OutputSelector"}' ></ayx>
+        </section>
+        <section>
+          <div id="example" class="example"></div>
+        </section>
+      </article>
+    </fieldset>
+    
+  <script type="text/javascript">
+    const displayHelp = (manager) => {
+      const objectJSON =`<i><pre>
+ Example:
+ <code>
+  [
+    {
+      1st Field Name: 1st Record Value,
+      2nd Field Name: 1st Record Value,
+      ...
+    },
+    {
+      1st Field Name: 2nd Record Value,
+      2nd Field Name: 2nd Record Value,
+      ...
+    },
+    ...
+  ]</code></pre></i>`
+
+    const arrayJSON = `<i><pre>
+ Example:
+ <code>
+  {
+    1st Field Name: [
+      1st Record Value,
+      2nd Record Value,
+      ...
+    ],
+    2nd Field Name: [
+      1st Record Value,
+      2nd Record Value,
+      ...
+    ],
+    ...
+  }</code></pre></i>`
+
+    switch (Alteryx.Gui.Manager.getDataItem('OutputSelector').getValue()) {
+      case 'array':
+        document.getElementById('example').innerHTML = arrayJSON
+        break;
+      case 'object':
+        document.getElementById('example').innerHTML = objectJSON
+        break;
+      default:
+        document.getElementById('example').innerHTML = ''
+      }
+    }
+
+  Alteryx.Gui.BeforeLoad = function (manager, AlteryxDataItems, json) {
+    var stringSelector = new AlteryxDataItems.StringSelector('OutputSelector', {
+      optionList: [
+        {label: 'Records as Array', value: 'array'},
+        {label: 'Records as Object', value: 'object'}
+      ]
+    })
+    manager.addDataItem(stringSelector)
+    manager.bindDataItemToWidget(stringSelector, 'OutputSelector') // Bind to widget
+    manager.setValue('array')
+
+    displayHelp(manager);
+  }
+
+  Alteryx.Gui.AfterLoad = (manager) => {
+    displayHelp(manager)
+    Alteryx.Gui.Manager.getDataItem('OutputSelector').registerPropertyListener('value', displayHelp)
+
+  }  
+  </script>
+  </body>
+</html>
