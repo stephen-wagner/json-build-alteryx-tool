@@ -99,7 +99,7 @@
     })
     manager.addDataItem(stringSelector)
     manager.bindDataItemToWidget(stringSelector, 'OutputSelector') // Bind to widget
-    manager.setValue('array')
+    manager.getDataItem('OutputSelector').setValue('array')
 
     displayHelp(manager);
   }
