@@ -5,7 +5,7 @@
     <MetaInfo>
       <NameIsFileName value="True"/>
       <Name>JSON Build</Name>
-      <Description>Creates a JSON object from an incoming data stream.</Description>
+      <Description>Creates a JSON object (or objects) from an incoming data stream.</Description>
       <RootToolName>json-build</RootToolName>
       <ToolVersion>1</ToolVersion>
       <ToolInDB value="false"/>

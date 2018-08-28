@@ -78,12 +78,33 @@
     ...
   }</code></pre></i>`
 
+    const objectsJSON = `<i><pre>
+ Example:
+ <code>
+    {
+      1st Field Name: 1st Record Value,
+      2nd Field Name: 1st Record Value,
+      ...
+    }
+    <hr>
+    {
+      1st Field Name: 2nd Record Value,
+      2nd Field Name: 2nd Record Value,
+      ...
+    }
+    <hr>
+    ...
+  </code></pre></i>`
+
     switch (Alteryx.Gui.Manager.getDataItem('OutputSelector').getValue()) {
       case 'array':
         document.getElementById('example').innerHTML = arrayJSON
         break;
       case 'object':
         document.getElementById('example').innerHTML = objectJSON
+        break;
+      case 'objects':
+        document.getElementById('example').innerHTML = objectsJSON
         break;
       default:
         document.getElementById('example').innerHTML = ''
@@ -94,7 +115,8 @@
     var stringSelector = new AlteryxDataItems.StringSelector('OutputSelector', {
       optionList: [
         {label: 'Records as Array', value: 'array'},
-        {label: 'Records as Object', value: 'object'}
+        {label: 'Records as Object', value: 'object'},
+        {label: 'Each Record as Objects', value: 'objects'}
       ]
     })
     manager.addDataItem(stringSelector)

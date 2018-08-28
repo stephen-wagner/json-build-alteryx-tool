@@ -131,15 +131,41 @@
          }
         ]
       };
-      var output = []
-      var data = []
-      data.push(JSON.stringify(JSONBuild.JSONobj))
-      output.push(data)
+
+      var pushOne = () => {
+
+        var output = []
+        var data = []
+        data.push(JSON.stringify(JSONBuild.JSONobj))
+        output.push(data)
+
+        Alteryx.Engine.SendMessage.PushRecords(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, output);
+        Alteryx.Engine.SendMessage.CloseOutput(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name);
+        Alteryx.Engine.SendMessage.Complete();
+
+      }
+
+      var pushIterate = () => {
+
+        JSONBuild.JSONobj.forEach(function(rec) {
+
+          var output = []
+          var data = []
+          data.push(JSON.stringify(rec))
+          output.push(data)
+          
+          Alteryx.Engine.SendMessage.PushRecords(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, output);
+
+        })
+
+        Alteryx.Engine.SendMessage.CloseOutput(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name);
+        Alteryx.Engine.SendMessage.Complete();
+
+      }
 
       Alteryx.Engine.SendMessage.RecordInfo(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, metaObj);
-      Alteryx.Engine.SendMessage.PushRecords(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name, output);
-      Alteryx.Engine.SendMessage.CloseOutput(Alteryx.Plugin.DefineConnections().OutgoingConnections[0].name);
-      Alteryx.Engine.SendMessage.Complete();
+      JSONBuild.OutputSelector == 'objects' ? pushIterate() : pushOne();
+
      };
 
      /**
