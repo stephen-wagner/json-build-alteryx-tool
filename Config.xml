@@ -3,7 +3,7 @@
   <Properties>
     <MetaInfo>
       <Name>JSON Build</Name>
-      <Description>Creates a JSON object from an incoming data stream.</Description>
+      <Description>Creates a JSON object (or objects) from an incoming data stream.</Description>
       <ToolVersion>1</ToolVersion>
       <CategoryName>Developer</CategoryName>
       <Author>Stephen Wagner</Author>
